@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import FragmentPage from './components/FragmentPage';
+import TagsPage from './components/TagsPage';
+import InfosPage from './components/InfosPage';
+
 import styled from 'styled-components';
 
 const AppContainer = styled.div`
@@ -51,8 +54,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/fragments" />} />
             <Route path="/fragments" element={<FragmentPage />} />
-            <Route path="/tags" element={<div>Tags</div>} />
-            <Route path="/infos" element={<div>Infos</div>} />
+            <Route path="/tags" element={<TagsPage />} />
+            <Route path="/infos" element={<InfosPage />} />
+
           </Routes>
         </MainContent>
       </AppContainer>

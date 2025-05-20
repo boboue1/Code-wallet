@@ -8,8 +8,8 @@ const Container = styled.div`
 
 const Header = styled.div`
   display: flex;
+  align-items: flex-end;
   justify-content: space-between;
-  align-items: center;
 `;
 
 const ButtonNew = styled.button`
