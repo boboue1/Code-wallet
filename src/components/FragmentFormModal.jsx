@@ -58,13 +58,15 @@ const ButtonSave = styled.button`
   cursor: pointer;
 `;
 
-function FragmentFormModal({ onClose }) {
+function FragmentFormModal({ onClose, onSave }) {
   const [title, setTitle] = useState('');
   const [code, setCode] = useState('');
 
   const handleSave = () => {
-    console.log({ title, code });
-    onClose();
+    if (!title.trim() || !code.trim()) return;
+    onSave({ title, code });
+    setTitle('');
+    setCode('');
   };
 
   return (
