@@ -3,7 +3,6 @@ import Navbar from './components/Navbar';
 import FragmentPage from './components/FragmentPage';
 import TagsPage from './components/TagsPage';
 import InfosPage from './components/InfosPage';
-
 import styled from 'styled-components';
 
 const AppContainer = styled.div`
