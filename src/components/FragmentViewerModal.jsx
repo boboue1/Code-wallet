@@ -25,7 +25,7 @@ const Modal = styled.div`
 const CodeBlock = styled.pre`
   background-color: #1e1e1e;
   color: white;
-  padding: 16px;
+  /* padding: 16px; */
   border-radius: 6px;
   overflow-x: auto;
   max-height: 400px;
@@ -68,7 +68,7 @@ function FragmentViewerModal({ fragment, onClose }) {
           <code className="language-javascript">{fragment.code}</code>
         </CodeBlock>
         <Actions>
-          <Button onClick={copyToClipboard}>📋 Copier</Button>
+          <Button onClick={copyToClipboard}>Copy</Button>
           <Button onClick={onClose}>Fermer</Button>
         </Actions>
       </Modal>

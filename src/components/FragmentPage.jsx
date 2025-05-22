@@ -1,15 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import FragmentFormModal from './FragmentFormModal';
 import FragmentViewerModal from './FragmentViewerModal';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  padding: 20px;
+  padding: 10px;
 `;
 
 const Header = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
 `;
 
@@ -38,12 +38,43 @@ const FragmentItem = styled.div`
   background-color: #1e1e1e;
   color: white;
   padding: 12px;
-  width: 400px;
+  width: 100%;
+  max-width: 500px;
   border-radius: 8px;
   word-break: break-word;
+`;
+
+const FragmentHeader = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+`;
+
+const LeftContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+`;
+
+const Title = styled.strong`
+  font-size: 1rem;
+`;
+
+const TagsContainer = styled.div`
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+`;
+
+const Tag = styled.span`
+  background-color: #444;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
 `;
 
 const EyeButton = styled.button`
@@ -58,40 +89,109 @@ const EyeButton = styled.button`
   }
 `;
 
+const EditButton = styled.button`
+  background: none;
+  border: none;
+  color: #ffaa00;
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-left: 8px;
+
+  &:hover {
+    color: #ffc94b;
+  }
+`;
+
 function FragmentPage() {
   const [fragments, setFragments] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedFragment, setSelectedFragment] = useState(null);
+  const [editFragment, setEditFragment] = useState(null);
+
+  // Chargement depuis localStorage au premier rendu
+  useEffect(() => {
+    const stored = localStorage.getItem('fragments');
+    if (stored) {
+      setFragments(JSON.parse(stored));
+    }
+  }, []);
+
+  // Sauvegarde à chaque changement
+  useEffect(() => {
+    localStorage.setItem('fragments', JSON.stringify(fragments));
+  }, [fragments]);
 
   const handleSave = (newFragment) => {
-    setFragments((prev) => [...prev, newFragment]);
+    if (editFragment !== null) {
+      // Mode édition : on remplace
+      setFragments(prev =>
+        prev.map((frag, i) => (i === editFragment ? newFragment : frag))
+      );
+      setEditFragment(null);
+    } else {
+      // Nouveau fragment
+      setFragments(prev => [...prev, newFragment]);
+    }
     setShowModal(false);
+  };
+
+  const handleDelete = (indexToDelete) => {
+    setFragments(prev => prev.filter((_, i) => i !== indexToDelete));
+    setShowModal(false);
+    setEditFragment(null);
   };
 
   const openViewer = (fragment) => {
     setSelectedFragment(fragment);
   };
 
+  const openEditForm = (fragment, index) => {
+    setEditFragment(index);
+    setShowModal(true);
+  };
+
   return (
     <Container>
       <Header>
-        <h2>Code Wallet</h2>
-        <ButtonNew onClick={() => setShowModal(true)}>+ New</ButtonNew>
+        <h2>Vos Fragments</h2>
+        <ButtonNew onClick={() => {
+          setEditFragment(null);
+          setShowModal(true);
+        }}>
+          + New
+        </ButtonNew>
       </Header>
 
       <FragmentList>
         {fragments.map((frag, i) => (
           <FragmentItem key={i}>
-            <strong>{frag.title}</strong>
-            <EyeButton onClick={() => openViewer(frag)}>👁️</EyeButton>
+            <FragmentHeader>
+              <LeftContent>
+                <Title>{frag.title}</Title>
+                <TagsContainer>
+                  {frag.tags?.map((tag, index) => (
+                    <Tag key={index}>{tag}</Tag>
+                  ))}
+                </TagsContainer>
+              </LeftContent>
+              <div>
+                <EyeButton onClick={() => openViewer(frag)}>👁️</EyeButton>
+                <EditButton onClick={() => openEditForm(frag, i)}>✏️</EditButton>
+              </div>
+            </FragmentHeader>
           </FragmentItem>
         ))}
       </FragmentList>
 
       {showModal && (
         <FragmentFormModal
-          onClose={() => setShowModal(false)}
+          onClose={() => {
+            setShowModal(false);
+            setEditFragment(null);
+          }}
           onSave={handleSave}
+          onDelete={editFragment !== null ? () => handleDelete(editFragment) : null}
+          initialData={editFragment !== null ? fragments[editFragment] : null}
         />
       )}
 

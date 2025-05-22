@@ -1,95 +1,165 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-const Backdrop = styled.div`
+const Overlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 999;
 `;
 
 const Modal = styled.div`
-  background: white;
-  padding: 20px;
-  width: 400px;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  background-color: #1e1e1e;
+  color: white;
+  padding: 24px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+`;
+
+const Title = styled.h3`
+  margin-top: 0;
 `;
 
 const Input = styled.input`
-  padding: 8px;
-  font-size: 1rem;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid #555;
+  background-color: #2a2a2a;
+  color: white;
 `;
 
 const TextArea = styled.textarea`
-  height: 150px;
-  padding: 8px;
-  font-family: monospace;
-  font-size: 0.9rem;
+  width: 100%;
+  height: 120px;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid #555;
+  background-color: #2a2a2a;
+  color: white;
 `;
 
-const ModalActions = styled.div`
+const ButtonGroup = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-top: 16px;
+  gap: 10px;
+  flex-wrap: wrap;
 `;
 
-const ButtonDelete = styled.button`
-  padding: 8px 12px;
-  background-color: #dc3545;
+const Button = styled.button`
+  padding: 8px 14px;
   border: none;
-  color: white;
   border-radius: 4px;
+  font-weight: bold;
   cursor: pointer;
 `;
 
-const ButtonSave = styled.button`
-  padding: 8px 12px;
+const SaveButton = styled(Button)`
   background-color: #28a745;
-  border: none;
   color: white;
-  border-radius: 4px;
-  cursor: pointer;
+
+  &:hover {
+    background-color: #218838;
+  }
 `;
 
-function FragmentFormModal({ onClose, onSave }) {
+const CancelButton = styled(Button)`
+  background-color: #6c757d;
+  color: white;
+
+  &:hover {
+    background-color: #5a6268;
+  }
+`;
+
+const DeleteButton = styled(Button)`
+  background-color: #dc3545;
+  color: white;
+
+  &:hover {
+    background-color: #c82333;
+  }
+`;
+
+function FragmentFormModal({ onClose, onSave, onDelete, initialData = null }) {
   const [title, setTitle] = useState('');
   const [code, setCode] = useState('');
+  const [tags, setTags] = useState('');
 
-  const handleSave = () => {
-    if (!title.trim() || !code.trim()) return;
-    onSave({ title, code });
-    setTitle('');
-    setCode('');
+  // Préremplir si on est en édition
+  useEffect(() => {
+    if (initialData) {
+      setTitle(initialData.title);
+      setCode(initialData.code);
+      setTags(initialData.tags.join(', '));
+    }
+  }, [initialData]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newFragment = {
+      title,
+      code,
+      tags: tags.split(',').map((t) => t.trim()).filter((t) => t),
+    };
+    onSave(newFragment);
   };
 
   return (
-    <Backdrop>
+    <Overlay>
       <Modal>
-        <h3>Nouveau Fragment</h3>
-        <Input
-          type="text"
-          placeholder="Titre du fragment"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <TextArea
-          placeholder="Code du fragment"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-        />
-        <ModalActions>
-          <ButtonDelete onClick={onClose}>Supprimer</ButtonDelete>
-          <ButtonSave onClick={handleSave}>Sauvegarder</ButtonSave>
-        </ModalActions>
+        <Title>{initialData ? 'Modifier le fragment' : 'Nouveau fragment'}</Title>
+        <form onSubmit={handleSubmit}>
+          <Input
+            type="text"
+            placeholder="Titre"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+          <TextArea
+            placeholder="Code"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            required
+          />
+          <Input
+            type="text"
+            placeholder="Tags (séparés par des virgules)"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+          />
+
+          <ButtonGroup>
+             <CancelButton type="button" onClick={onClose}>
+              Annuler
+            </CancelButton>
+            <SaveButton type="submit">
+              {initialData ? 'Enregistrer' : 'Ajouter'}
+            </SaveButton>
+
+           
+
+            {onDelete && (
+              <DeleteButton type="button" onClick={onDelete}>
+                Supprimer
+              </DeleteButton>
+            )}
+          </ButtonGroup>
+        </form>
       </Modal>
-    </Backdrop>
+    </Overlay>
   );
 }
 
