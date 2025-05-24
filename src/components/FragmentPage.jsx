@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import FragmentFormModal from './FragmentFormModal';
 import FragmentViewerModal from './FragmentViewerModal';
 import styled from 'styled-components';
-
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import db from '../firebase'
 const Container = styled.div`
   padding: 10px;
 `;
@@ -108,35 +109,42 @@ function FragmentPage() {
   const [selectedFragment, setSelectedFragment] = useState(null);
   const [editFragment, setEditFragment] = useState(null);
 
-  // Chargement depuis localStorage au premier rendu
   useEffect(() => {
-    const stored = localStorage.getItem('fragments');
-    if (stored) {
-      setFragments(JSON.parse(stored));
-    }
+    const fetchFragments = async () => {
+      const querySnapshot = await getDocs(collection(db, 'fragments'));
+      const loadedFragments = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setFragments(loadedFragments);
+    };
+
+    fetchFragments();
   }, []);
 
-  // Sauvegarde à chaque changement
-  useEffect(() => {
-    localStorage.setItem('fragments', JSON.stringify(fragments));
-  }, [fragments]);
-
-  const handleSave = (newFragment) => {
+  const handleSave = async (newFragment) => {
     if (editFragment !== null) {
-      // Mode édition : on remplace
-      setFragments(prev =>
-        prev.map((frag, i) => (i === editFragment ? newFragment : frag))
-      );
-      setEditFragment(null);
+      const fragmentRef = doc(db, 'fragments', fragments[editFragment].id);
+      await updateDoc(fragmentRef, newFragment);
     } else {
-      // Nouveau fragment
-      setFragments(prev => [...prev, newFragment]);
+      await addDoc(collection(db, 'fragments'), newFragment);
     }
+
+    const querySnapshot = await getDocs(collection(db, 'fragments'));
+    const updated = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    setFragments(updated);
     setShowModal(false);
+    setEditFragment(null);
   };
 
-  const handleDelete = (indexToDelete) => {
-    setFragments(prev => prev.filter((_, i) => i !== indexToDelete));
+  const handleDelete = async (indexToDelete) => {
+    const fragment = fragments[indexToDelete];
+    const fragmentRef = doc(db, 'fragments', fragment.id);
+    await deleteDoc(fragmentRef);
+
+    const querySnapshot = await getDocs(collection(db, 'fragments'));
+    const updated = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    setFragments(updated);
     setShowModal(false);
     setEditFragment(null);
   };
@@ -164,7 +172,7 @@ function FragmentPage() {
 
       <FragmentList>
         {fragments.map((frag, i) => (
-          <FragmentItem key={i}>
+          <FragmentItem key={frag.id || i}>
             <FragmentHeader>
               <LeftContent>
                 <Title>{frag.title}</Title>
@@ -175,8 +183,8 @@ function FragmentPage() {
                 </TagsContainer>
               </LeftContent>
               <div>
-                <EyeButton onClick={() => openViewer(frag)}>👁️</EyeButton>
                 <EditButton onClick={() => openEditForm(frag, i)}>✏️</EditButton>
+                <EyeButton onClick={() => openViewer(frag)}>👁️</EyeButton>
               </div>
             </FragmentHeader>
           </FragmentItem>
