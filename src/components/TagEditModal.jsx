@@ -69,36 +69,48 @@ const Button = styled.button`
   }
 `;
 
+// Composant de modale permettant de créer ou modifier un tag
 export default function TagEditModal({ oldTag, isNew, onClose, onSave, onDelete }) {
+  // État local pour stocker la valeur du tag en cours d'édition
   const [editedTag, setEditedTag] = useState(oldTag);
 
+  // Synchronise le tag édité lorsque la prop oldTag change
   useEffect(() => {
     setEditedTag(oldTag);
   }, [oldTag]);
 
   return (
+    // Fond de la modale - ferme la modale si on clique en dehors du contenu
     <ModalBackground onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
       <ModalContainer>
+        {/* Titre de la modale, différent selon s’il s’agit d’un nouveau tag ou de l’édition d’un tag existant */}
         <ModalTitle>{isNew ? 'Create New Tag' : `Edit Tag "${oldTag}"`}</ModalTitle>
 
+        {/* Champ de saisie du nom du tag */}
         <InputTag
           value={editedTag}
-          onChange={e => setEditedTag(e.target.value)}
+          onChange={e => setEditedTag(e.target.value)} // Met à jour l’état à chaque frappe
           placeholder="Enter tag name"
           onKeyDown={e => {
-            if (e.key === 'Enter') onSave(oldTag, editedTag);
-            if (e.key === 'Escape') onClose();
+            if (e.key === 'Enter') onSave(oldTag, editedTag); // Sauvegarde si "Entrée"
+            if (e.key === 'Escape') onClose(); // Ferme la modale si "Échap"
           }}
-          autoFocus
+          autoFocus // Place automatiquement le focus dans le champ à l’ouverture de la modale
         />
 
+        {/* Rangée des boutons d’action */}
         <ButtonsRow>
+          {/* Affiche le bouton de suppression seulement si ce n’est pas un nouveau tag */}
           {!isNew && (
             <Button danger onClick={() => onDelete(oldTag)}>
               Delete
             </Button>
           )}
+
+          {/* Bouton pour annuler et fermer la modale */}
           <Button onClick={onClose}>Cancel</Button>
+
+          {/* Bouton pour créer ou sauvegarder le tag selon le mode */}
           <Button primary onClick={() => onSave(oldTag, editedTag)}>
             {isNew ? 'Create' : 'Save'}
           </Button>

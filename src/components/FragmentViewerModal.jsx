@@ -59,22 +59,32 @@ const Button = styled.button`
   }
 `;
 
+// Composant qui affiche une modale avec le contenu d’un fragment de code
 function FragmentViewerModal({ fragment, onClose }) {
+  // Utilise Highlight.js pour colorer le code à l'affichage du composant
   useEffect(() => {
-    hljs.highlightAll();
+    hljs.highlightAll(); // Applique la coloration syntaxique à tous les blocs <code>
   }, []);
 
+  // Fonction pour copier le code du fragment dans le presse-papiers
   const copyToClipboard = () => {
     navigator.clipboard.writeText(fragment.code);
   };
 
   return (
+    // Fond de la modale
     <Backdrop>
+      {/* Contenu principal de la modale */}
       <Modal>
+        {/* Titre du fragment */}
         <h3 style={{ color: '#333333' }}>{fragment.title}</h3>
+
+        {/* Bloc contenant le code avec coloration syntaxique */}
         <CodeBlock>
           <code className="language-javascript">{fragment.code}</code>
         </CodeBlock>
+
+        {/* Boutons d'action : copier le code ou fermer la modale */}
         <Actions>
           <Button onClick={copyToClipboard}>Copy</Button>
           <Button onClick={onClose}>Fermer</Button>
@@ -85,3 +95,4 @@ function FragmentViewerModal({ fragment, onClose }) {
 }
 
 export default FragmentViewerModal;
+

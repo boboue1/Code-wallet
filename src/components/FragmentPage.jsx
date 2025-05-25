@@ -9,11 +9,19 @@ import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase
 import db from '../firebase';
 
 function FragmentPage() {
+  // État local pour stocker la liste des fragments de code
   const [fragments, setFragments] = useState([]);
+
+  // Contrôle l’affichage du formulaire (modale)
   const [showModal, setShowModal] = useState(false);
+
+  // Fragment actuellement sélectionné pour l’affichage dans la modale de visualisation
   const [selectedFragment, setSelectedFragment] = useState(null);
+
+  // Index du fragment en cours d’édition (null si ajout d’un nouveau)
   const [editFragment, setEditFragment] = useState(null);
 
+  // Récupère les fragments depuis Firestore au chargement initial de la page
   useEffect(() => {
     const fetchFragments = async () => {
       const querySnapshot = await getDocs(collection(db, 'fragments'));
@@ -21,43 +29,55 @@ function FragmentPage() {
         id: doc.id,
         ...doc.data()
       }));
-      setFragments(loadedFragments);
+      setFragments(loadedFragments); // Met à jour l'état avec les fragments récupérés
     };
 
-    fetchFragments();
+    fetchFragments(); // Appelle la fonction de récupération
   }, []);
 
+  // Enregistre un nouveau fragment ou met à jour un fragment existant
   const handleSave = async (newFragment) => {
     if (editFragment !== null) {
+      // Mise à jour d’un fragment existant
       const fragmentRef = doc(db, 'fragments', fragments[editFragment].id);
       await updateDoc(fragmentRef, newFragment);
     } else {
+      // Ajout d’un nouveau fragment
       await addDoc(collection(db, 'fragments'), newFragment);
     }
 
+    // Recharge tous les fragments après modification
     const querySnapshot = await getDocs(collection(db, 'fragments'));
     const updated = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     setFragments(updated);
+
+    // Ferme la modale et réinitialise l’état d’édition
     setShowModal(false);
     setEditFragment(null);
   };
 
+  // Supprime un fragment à partir de son index
   const handleDelete = async (indexToDelete) => {
     const fragment = fragments[indexToDelete];
     const fragmentRef = doc(db, 'fragments', fragment.id);
     await deleteDoc(fragmentRef);
 
+    // Recharge la liste des fragments après suppression
     const querySnapshot = await getDocs(collection(db, 'fragments'));
     const updated = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     setFragments(updated);
+
+    // Ferme la modale et réinitialise l’état d’édition
     setShowModal(false);
     setEditFragment(null);
   };
 
+  // Ouvre la modale de visualisation du fragment
   const openViewer = (fragment) => {
     setSelectedFragment(fragment);
   };
 
+  // Ouvre la modale de formulaire pour l’édition d’un fragment
   const openEditForm = (fragment, index) => {
     setEditFragment(index);
     setShowModal(true);
@@ -65,20 +85,23 @@ function FragmentPage() {
 
   return (
     <Container>
+      {/* En-tête avec le titre de la page et le bouton "New" */}
       <Header>
         <h2>Fragments</h2>
         <ButtonNew onClick={() => {
-          setEditFragment(null);
-          setShowModal(true);
+          setEditFragment(null); // Réinitialise l’édition pour ajouter un nouveau
+          setShowModal(true);   // Affiche la modale
         }}>
           + New
         </ButtonNew>
       </Header>
 
+      {/* Liste des fragments affichés dans des cartes */}
       <FragmentList>
         {fragments.map((frag, i) => (
           <FragmentItem key={frag.id || i}>
             <FragmentHeader>
+              {/* Partie gauche avec le titre et les tags */}
               <LeftContent>
                 <Title>{frag.title}</Title>
                 <TagsContainer>
@@ -87,6 +110,8 @@ function FragmentPage() {
                   ))}
                 </TagsContainer>
               </LeftContent>
+
+              {/* Boutons d’action (éditer / voir) */}
               <div>
                 <EditButton onClick={() => openEditForm(frag, i)}>✏️</EditButton>
                 <EyeButton onClick={() => openViewer(frag)}>👁️</EyeButton>
@@ -96,6 +121,7 @@ function FragmentPage() {
         ))}
       </FragmentList>
 
+      {/* Modale de création ou édition de fragment */}
       {showModal && (
         <FragmentFormModal
           onClose={() => {
@@ -108,6 +134,7 @@ function FragmentPage() {
         />
       )}
 
+      {/* Modale de visualisation d’un fragment sélectionné */}
       {selectedFragment && (
         <FragmentViewerModal
           fragment={selectedFragment}
@@ -119,3 +146,4 @@ function FragmentPage() {
 }
 
 export default FragmentPage;
+
