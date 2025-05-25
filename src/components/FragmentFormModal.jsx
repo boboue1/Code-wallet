@@ -7,7 +7,7 @@ const Overlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(51, 51, 51, 0.8); /* gris foncé semi-transparent */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -15,17 +15,18 @@ const Overlay = styled.div`
 `;
 
 const Modal = styled.div`
-  background-color: #1e1e1e;
-  color: white;
+  background-color: #333333; /* gris foncé */
+  color: #ffffff; /* blanc */
   padding: 24px;
   border-radius: 10px;
   width: 90%;
   max-width: 500px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(122, 72, 208, 0.6); /* violet flou */
 `;
 
 const Title = styled.h3`
   margin-top: 0;
+  color: #b288c0; /* lavande clair */
 `;
 
 const Input = styled.input`
@@ -33,9 +34,16 @@ const Input = styled.input`
   padding: 10px;
   margin-bottom: 12px;
   border-radius: 6px;
-  border: 1px solid #555;
-  background-color: #2a2a2a;
-  color: white;
+  border: 1px solid #b288c0; /* lavande clair */
+  background-color: #333333; /* gris foncé */
+  color: #ffffff; /* blanc */
+  font-size: 1rem;
+
+  &:focus {
+    outline: none;
+    border-color: #9a48d0; /* violet vif */
+    box-shadow: 0 0 5px #9a48d0;
+  }
 `;
 
 const TextArea = styled.textarea`
@@ -44,9 +52,16 @@ const TextArea = styled.textarea`
   padding: 10px;
   margin-bottom: 12px;
   border-radius: 6px;
-  border: 1px solid #555;
-  background-color: #2a2a2a;
-  color: white;
+  border: 1px solid #b288c0; /* lavande clair */
+  background-color: #333333; /* gris foncé */
+  color: #ffffff; /* blanc */
+  font-size: 1rem;
+
+  &:focus {
+    outline: none;
+    border-color: #9a48d0; /* violet vif */
+    box-shadow: 0 0 5px #9a48d0;
+  }
 `;
 
 const ButtonGroup = styled.div`
@@ -63,32 +78,37 @@ const Button = styled.button`
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
 `;
 
+// Vert clair pour Save
 const SaveButton = styled(Button)`
-  background-color: #28a745;
-  color: white;
+  background-color: #7bc950; 
+  color: #333333; /* texte gris foncé pour contraste */
 
   &:hover {
-    background-color: #218838;
+    background-color: #68b03f;
   }
 `;
 
+// Lavande clair pour Cancel
 const CancelButton = styled(Button)`
-  background-color: #6c757d;
-  color: white;
+  background-color: #b288c0;
+  color: #333333;
 
   &:hover {
-    background-color: #5a6268;
+    background-color: #9a70af;
   }
 `;
 
+// Violet vif pour Delete
 const DeleteButton = styled(Button)`
-  background-color: #dc3545;
-  color: white;
+  background-color: #9a48d0;
+  color: #ffffff;
 
   &:hover {
-    background-color: #c82333;
+    background-color: #7c33aa;
   }
 `;
 
@@ -97,7 +117,6 @@ function FragmentFormModal({ onClose, onSave, onDelete, initialData = null }) {
   const [code, setCode] = useState('');
   const [tags, setTags] = useState('');
 
-  // Préremplir si on est en édition
   useEffect(() => {
     if (initialData) {
       setTitle(initialData.title);
@@ -142,14 +161,12 @@ function FragmentFormModal({ onClose, onSave, onDelete, initialData = null }) {
           />
 
           <ButtonGroup>
-             <CancelButton type="button" onClick={onClose}>
+            <CancelButton type="button" onClick={onClose}>
               Annuler
             </CancelButton>
             <SaveButton type="submit">
               {initialData ? 'Enregistrer' : 'Ajouter'}
             </SaveButton>
-
-           
 
             {onDelete && (
               <DeleteButton type="button" onClick={onDelete}>

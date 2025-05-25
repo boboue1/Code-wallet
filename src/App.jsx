@@ -1,20 +1,18 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import Navbar from './pages/Navbar';
+import GlobalStyle from './styles/GlobalStyle';
 import FragmentPage from './components/FragmentPage';
-import TagsPage from './components/TagsPage';
-import InfosPage from './components/InfosPage';
+import TagsPage from './pages/TagsPage';
+import InfosPage from './pages/InfosPage';
 import styled from 'styled-components';
 
-const AppContainer = styled.div`
-  font-family: sans-serif;
-`;
 
 const FixedHeader = styled.header`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  background-color: #1e1e1e;
+  background-color: #b288c0;
   z-index: 999;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   padding: 10px 20px;
@@ -42,7 +40,8 @@ const MainContent = styled.main`
 function App() {
   return (
     <Router>
-      <AppContainer>
+      <GlobalStyle/>
+      <>
         <FixedHeader>
           <AppTitle>🧠 Code Wallet</AppTitle>
           <NavWrapper>
@@ -58,7 +57,7 @@ function App() {
 
           </Routes>
         </MainContent>
-      </AppContainer>
+      </>
     </Router>
   );
 }

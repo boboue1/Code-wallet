@@ -9,30 +9,32 @@ const Backdrop = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(51, 51, 51, 0.8); /* gris foncé semi-transparent */
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
 const Modal = styled.div`
-  background: #fff;
+  background: #ffffff; /* blanc */
   padding: 20px;
   width: 600px;
   border-radius: 8px;
+  box-shadow: 0 0 15px rgba(154, 72, 208, 0.4); /* violet doux */
 `;
 
 const CodeBlock = styled.pre`
-  background-color: #1e1e1e;
-  color: white;
-  /* padding: 16px; */
+  background-color: #333333; /* gris foncé */
+  color: #ffffff; /* blanc */
   border-radius: 6px;
   overflow-x: auto;
   max-height: 400px;
+  padding: 16px;
 
   code {
     font-family: 'Fira Code', monospace;
     font-size: 0.9rem;
+    color: #b288c0; /* lavande clair pour le texte */
   }
 `;
 
@@ -43,12 +45,18 @@ const Actions = styled.div`
 `;
 
 const Button = styled.button`
-  background-color: #007bff;
-  color: white;
+  background-color: #9a48d0; /* violet vif */
+  color: #ffffff; /* blanc */
   padding: 6px 12px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #b288c0; /* lavande clair */
+  }
 `;
 
 function FragmentViewerModal({ fragment, onClose }) {
@@ -63,7 +71,7 @@ function FragmentViewerModal({ fragment, onClose }) {
   return (
     <Backdrop>
       <Modal>
-        <h3>{fragment.title}</h3>
+        <h3 style={{ color: '#333333' }}>{fragment.title}</h3>
         <CodeBlock>
           <code className="language-javascript">{fragment.code}</code>
         </CodeBlock>

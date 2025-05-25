@@ -1,6 +1,6 @@
+src/firebase.js
 # Logs
 .env
-./src/firebase.js
 logs
 *.log
 npm-debug.log*

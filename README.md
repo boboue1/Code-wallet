@@ -1,12 +1,46 @@
-# React + Vite
+Code Wallet
+Une application React simple et élégante pour gérer vos fragments de code avec un formulaire modale. Permet d’ajouter, modifier, supprimer des fragments, et d’organiser ceux-ci avec des tags.
+Un fragment peut comporter plusieurs Tags.
+Les fragments sont modifés à volonté.
+Les tags ne peuvent être ajoutés depuis le formulaire Tag.
+Les tags peuvent être supprimés depuis les Tags, comme on peut l'ajputer en modifiant le fragment.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Technologies utilisées:
+_**React (hooks : useState, useEffect)**
+styled-components pour le style CSS en JS
+JavaScript moderne (ES6+)
+Highlight.js une bibliothèque JavaScript open source utilisée pour faire de la coloration syntaxique automatique dans les blocs de code affichés sur une page web.
 
-Currently, two official plugins are available:
+Lancement:
+Npm run dev avec react
+npm save dev avec Electron car c'est une application de bureau.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+//Ce qui faut faire pour arriver au rendu final
 
-## Expanding the ESLint configuration
+## Technologies requises
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Avant de commencer, assurez-vous d'avoir installé :
+
+- **Node.js** (version 16 ou supérieure recommandée)  
+- **npm** (inclus avec Node.js) ou **yarn**  
+- Un navigateur moderne pour exécuter l’application  
+- Un compte Firebase avec un projet configuré (Firestore activé)
+
+---
+
+## Installation et déploiement
+. **Cloner le dépôt :**
+
+```bash
+git clone <URL_DU_REPO>
+cd code-wallet
+
+Configurer Firebase :
+
+Créez un projet Firebase sur https://console.firebase.google.com/.
+
+Activez Firestore dans le projet.
+
+Récupérez la configuration Firebase (apiKey, authDomain, projectId, etc.).
+
+Créez un fichier .env.local à la racine du projet avec les variables d’environnement :

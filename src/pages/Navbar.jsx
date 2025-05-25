@@ -5,11 +5,10 @@ const NavbarContainer = styled.nav`
   display: flex;
   justify-content: center;
   gap: 40px;
-  /* padding: 10px 0 15px; */
 `;
 
 const StyledLink = styled(NavLink)`
-  color: #ccc;
+  color: #000000;
   text-decoration: none;
   font-weight: 500;
   font-size: 1rem;
@@ -19,12 +18,12 @@ const StyledLink = styled(NavLink)`
 
   &.active {
     color: white;
-    background-color: #007bff;
+    background-color: #9a48d0;
   }
 
   &:hover {
     color: white;
-    background-color: #0056b3;
+    background-color: #9a48d0;
   }
 `;
 

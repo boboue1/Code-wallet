@@ -1,9 +1,6 @@
 import styled from 'styled-components';
 
 const PageContainer = styled.div`
-  padding: 30px;
-  max-width: 800px;
-  margin: auto;
   color: #474242;
   line-height: 1.6;
 `;
@@ -15,7 +12,7 @@ const Section = styled.section`
 const Title = styled.h2`
   font-size: 1.8rem;
   margin-bottom: 16px;
-  color: #00bfff;
+  color: #050607;
 `;
 
 const Paragraph = styled.p`
@@ -33,10 +30,9 @@ function InfoPage() {
         <ul>
           <li> Save code snippets with title, tags, and programming language</li>
           <li> Search and filter by tags or keywords</li>
-          <li>Light/Dark mode toggle</li>
           <li>Quick preview in modal with copy-to-clipboard</li>
           <li> Tag management system</li>
-          <li> Local storage and optional Firebase cloud sync</li>
+          <li> Firebase cloud sync</li>
           <li> Syntax highlighting for multiple languages</li>
         </ul>
       </Section>
