@@ -1,13 +1,8 @@
 // src/pages/TagsPage.jsx
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
-// Exemple local de fragments simulés
-const mockFragments = [
-  { id: 1, title: "React snippet", tags: ["react", "js"] },
-  { id: 2, title: "PHP Code", tags: ["php", "backend"] },
-  { id: 3, title: "MySQL Query", tags: ["sql", "backend", "php"] },
-];
+import { collection, getDocs } from 'firebase/firestore';
+import db from '../firebase';
 
 const PageContainer = styled.div`
   padding: 20px;
@@ -51,23 +46,33 @@ function TagsPage() {
   const [tags, setTags] = useState([]);
 
   useEffect(() => {
-    const extractedTags = mockFragments.flatMap(f => f.tags || []);
-    const uniqueTags = [...new Set(extractedTags)];
-    setTags(uniqueTags);
+    const fetchTagsFromFragments = async () => {
+      const querySnapshot = await getDocs(collection(db, 'fragments'));
+      const allFragments = querySnapshot.docs.map(doc => doc.data());
+
+      // Extraire tous les tags
+      const extractedTags = allFragments.flatMap(frag => frag.tags || []);
+      const uniqueTags = [...new Set(extractedTags)]; // supprimer doublons
+      setTags(uniqueTags);
+    };
+
+    fetchTagsFromFragments();
   }, []);
 
   return (
     <PageContainer>
       <Header>
         <h2>Tags</h2>
-        <ButtonNew onClick={() => alert("Feature coming soon!")}>+ New Tag</ButtonNew>
+        <ButtonNew onClick={() => alert('Coming soon: Create new tags directly.')}>
+          + New Tag
+        </ButtonNew>
       </Header>
 
       <p>Filter and manage all tags used in your code fragments.</p>
 
       <TagList>
         {tags.length === 0 ? (
-          <p>No tags available.</p>
+          <p>No tags found.</p>
         ) : (
           tags.map((tag, index) => <TagItem key={index}>{tag}</TagItem>)
         )}
